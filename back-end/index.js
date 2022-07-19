@@ -56,6 +56,19 @@ app.put('/hero/edit', (req, res) => {
     })
 })
 
+app.delete('/hero/delete/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    sqlDelete = "DELETE FROM heros WHERE id=?;";
+    db.query(sqlDelete, id, (err, result) => {
+        console.log(err, result);
+        if (result) {
+            res.json({
+                "message": "Delete successfully!"
+            });
+        }
+    })
+})
+
 app.listen(4000, () => {
     console.log("Server listening on port 4000");
 })
