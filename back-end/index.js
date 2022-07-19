@@ -12,29 +12,47 @@ const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: process.env.DB_PASS,
-    database: 'SuperHero',
+    database: 'superheros',
 })
 
 app.get('/', (req, res) => {
     res.send("Welcome to mySql Server!");
 })
 
+app.get('/heros', (req, res) => {
+    db.query("SELECT * FROM superheros.heros;", (err, result) => {
+        res.json(result);
+    })
+})
+
 app.post('/hero/insert', (req, res) => {
     const name = req.body.name;
     const age = req.body.age;
     const description = req.body.description;
-    const sqlInsert = "INSERT INTO Heros (name, age, description) VALUES (?, ?, ?);";
+    const sqlInsert = "INSERT INTO heros (name, age, description) VALUES (?, ?, ?);";
     db.query(sqlInsert, [name, age, description], (err, result) => {
         console.log(err, result);
-        res.json({
-            "message": "added successfully!"
-        });
+        if (result) {
+            res.json({
+                "message": "added successfully!"
+            });
+        }
     })
 })
 
-app.get('/heros', (req, res) => {
-    db.query("SELECT * FROM SuperHero.Heros;", (err, result) => {
-        res.json(result);
+app.put('/hero/edit', (req, res) => {
+    const name = req.body.name;
+    const age = req.body.age;
+    const id = req.body.id;
+    const description = req.body.description;
+    const sqlEdit = "UPDATE heros SET ? where id=?;";
+    db.query(sqlEdit, [{ name: name, age: age, description: description }, id], (err, result) => {
+        console.log(err, result);
+        if (result) {
+            res.json({
+                "message": "Edited"
+            });
+        }
     })
 })
 
