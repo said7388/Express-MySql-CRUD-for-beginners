@@ -8,6 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+// Create mySQL Connection Pool
 const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -15,16 +16,19 @@ const db = mysql.createPool({
     database: 'superheros',
 })
 
+// App Home Route
 app.get('/', (req, res) => {
     res.send("Welcome to mySql Server!");
 })
 
+// Get all data from mySQL
 app.get('/heros', (req, res) => {
     db.query("SELECT * FROM superheros.heros;", (err, result) => {
         res.json(result);
     })
 })
 
+// Add new data to the table
 app.post('/hero/insert', (req, res) => {
     const name = req.body.name;
     const age = req.body.age;
@@ -40,6 +44,7 @@ app.post('/hero/insert', (req, res) => {
     })
 })
 
+// Update existing data from the mySQL table
 app.put('/hero/edit', (req, res) => {
     const name = req.body.name;
     const age = req.body.age;
@@ -56,6 +61,7 @@ app.put('/hero/edit', (req, res) => {
     })
 })
 
+// Delete a specific data from the mySQL table by id
 app.delete('/hero/delete/:id', (req, res) => {
     const id = parseInt(req.params.id);
     sqlDelete = "DELETE FROM heros WHERE id=?;";
@@ -68,6 +74,7 @@ app.delete('/hero/delete/:id', (req, res) => {
         }
     })
 })
+
 
 app.listen(4000, () => {
     console.log("Server listening on port 4000");
