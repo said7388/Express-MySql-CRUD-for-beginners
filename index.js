@@ -1,20 +1,12 @@
 const express = require('express');
 const app = express();
-const mysql = require('mysql');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+const db = require('./config/ mysql');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
 
-// Create mySQL Connection Pool
-const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: process.env.DB_PASS,
-    database: 'superheros',
-})
 
 // App Home Route
 app.get('/', (req, res) => {
@@ -23,7 +15,7 @@ app.get('/', (req, res) => {
 
 // Get all data from mySQL
 app.get('/heros', (req, res) => {
-    db.query("SELECT * FROM superheros.heros;", (err, result) => {
+    db.query("SELECT * FROM Heros;", (err, result) => {
         res.json(result);
     })
 })
@@ -33,7 +25,7 @@ app.post('/hero/insert', (req, res) => {
     const name = req.body.name;
     const age = req.body.age;
     const description = req.body.description;
-    const sqlInsert = "INSERT INTO heros (name, age, description) VALUES (?, ?, ?);";
+    const sqlInsert = "INSERT INTO Heros (name, age, description) VALUES (?, ?, ?);";
     db.query(sqlInsert, [name, age, description], (err, result) => {
         console.log(err, result);
         if (result) {
@@ -50,7 +42,7 @@ app.put('/hero/edit', (req, res) => {
     const age = req.body.age;
     const id = req.body.id;
     const description = req.body.description;
-    const sqlEdit = "UPDATE heros SET ? where id=?;";
+    const sqlEdit = "UPDATE Heros SET ? where id=?;";
     db.query(sqlEdit, [{ name: name, age: age, description: description }, id], (err, result) => {
         console.log(err, result);
         if (result) {
@@ -64,7 +56,7 @@ app.put('/hero/edit', (req, res) => {
 // Delete a specific data from the mySQL table by id
 app.delete('/hero/delete/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    sqlDelete = "DELETE FROM heros WHERE id=?;";
+    sqlDelete = "DELETE FROM Heros WHERE id=?;";
     db.query(sqlDelete, id, (err, result) => {
         console.log(err, result);
         if (result) {
