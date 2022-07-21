@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Create mySQL Connection Pool
-const db = mysql.createPool({
+const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: process.env.DB_PASS,
